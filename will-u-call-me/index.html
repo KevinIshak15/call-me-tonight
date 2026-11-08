@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>will u call me tonight?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #2a1830;
+      --blush: #ff6b8a;
+      --blush-deep: #e8456a;
+      --cream: #fff7f4;
+      --mist: rgba(255, 247, 244, 0.72);
+      --yes: #ff4d78;
+      --no: #5c4a55;
+      --glow: rgba(255, 120, 150, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100%;
+      height: 100%;
+    }
+
+    body {
+      font-family: "Sora", sans-serif;
+      color: var(--ink);
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 90% 70% at 15% 20%, #ffd0dc 0%, transparent 55%),
+        radial-gradient(ellipse 80% 60% at 85% 15%, #c9b6ff 0%, transparent 50%),
+        radial-gradient(ellipse 70% 80% at 50% 100%, #ffb4a2 0%, transparent 55%),
+        linear-gradient(165deg, #1b1030 0%, #3a1d45 38%, #6b3558 72%, #a85a6e 100%);
+      display: grid;
+      place-items: center;
+      padding: 1.25rem;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0.55;
+      animation: twinkle var(--dur) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.8); }
+      50% { opacity: 0.9; transform: scale(1.25); }
+    }
+
+    .stage {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 42rem);
+      min-height: min(78vh, 34rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 2.5rem;
+      padding: 2.5rem 1.5rem 3rem;
+    }
+
+    .question {
+      font-family: "Instrument Serif", serif;
+      font-size: clamp(2.4rem, 8vw, 4.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      text-shadow: 0 8px 40px rgba(0, 0, 0, 0.28);
+      animation: floaty 4.5s ease-in-out infinite;
+      max-width: 14ch;
+    }
+
+    .question em {
+      font-style: italic;
+      color: #ffd0dc;
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .hint {
+      margin-top: -1.5rem;
+      color: rgba(255, 247, 244, 0.68);
+      font-size: 0.95rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .buttons {
+      position: relative;
+      width: 100%;
+      min-height: 7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: inherit;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        font-size 0.35s cubic-bezier(0.34, 1.4, 0.64, 1),
+        padding 0.35s cubic-bezier(0.34, 1.4, 0.64, 1),
+        background 0.2s ease;
+    }
+
+    .yes {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(180deg, #ff7a96 0%, var(--yes) 100%);
+      color: white;
+      font-weight: 700;
+      font-size: var(--yes-size, 1.15rem);
+      padding: var(--yes-pad-y, 0.9rem) var(--yes-pad-x, 1.7rem);
+      border-radius: 999px;
+      box-shadow:
+        0 10px 28px var(--glow),
+        0 2px 0 rgba(255, 255, 255, 0.25) inset;
+      letter-spacing: 0.02em;
+    }
+
+    .yes:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow:
+        0 14px 34px var(--glow),
+        0 2px 0 rgba(255, 255, 255, 0.3) inset;
+    }
+
+    .yes:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    .no {
+      position: absolute;
+      z-index: 3;
+      left: 58%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--mist);
+      color: var(--no);
+      font-weight: 600;
+      font-size: 1.05rem;
+      padding: 0.85rem 1.55rem;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(20, 8, 24, 0.18);
+      transition: left 0.18s ease, top 0.18s ease, transform 0.12s ease, opacity 0.2s ease;
+      will-change: left, top;
+    }
+
+    .no:hover,
+    .no:focus-visible {
+      background: #fff;
+    }
+
+    .no.fleeing {
+      transition: left 0.12s ease-out, top 0.12s ease-out;
+    }
+
+    .celebration {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      background: rgba(24, 10, 28, 0.55);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      padding: 1.5rem;
+    }
+
+    .celebration.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .celebration-card {
+      background: linear-gradient(180deg, #fff8f6, #ffe4ea);
+      color: var(--ink);
+      border-radius: 1.75rem;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      max-width: 24rem;
+      width: 100%;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      transform: translateY(18px) scale(0.94);
+      transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+    }
+
+    .celebration.show .celebration-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .celebration-card h2 {
+      font-family: "Instrument Serif", serif;
+      font-size: clamp(2rem, 7vw, 3rem);
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+
+    .celebration-card p {
+      color: #6b4a58;
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .again {
+      background: var(--ink);
+      color: white;
+      font-weight: 600;
+      padding: 0.85rem 1.4rem;
+      border-radius: 999px;
+    }
+
+    .again:hover {
+      transform: translateY(-1px);
+    }
+
+    .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 15;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -2rem;
+      font-size: 1.4rem;
+      animation: rise 2.8s ease-out forwards;
+      opacity: 0.9;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.2) rotate(28deg); opacity: 0; }
+    }
+
+    @media (max-width: 520px) {
+      .stage {
+        gap: 2rem;
+        min-height: 70vh;
+      }
+
+      .no {
+        left: 70%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+
+  <main class="stage" id="stage">
+    <h1 class="question">will u call me <em>tonight</em>?</h1>
+    <p class="hint" id="hint">choose carefully…</p>
+    <div class="buttons" id="buttons">
+      <button class="yes" id="yes" type="button" aria-label="Yes">yes</button>
+      <button class="no" id="no" type="button" aria-label="No">no</button>
+    </div>
+  </main>
+
+  <div class="hearts" id="hearts" aria-hidden="true"></div>
+
+  <div class="celebration" id="celebration" role="dialog" aria-modal="true" aria-labelledby="cele-title">
+    <div class="celebration-card">
+      <h2 id="cele-title">i knew it</h2>
+      <p id="cele-copy">phone’s waiting. don’t leave me on read.</p>
+      <button class="again" id="again" type="button">ask again</button>
+    </div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+    const buttons = document.getElementById("buttons");
+    const hint = document.getElementById("hint");
+    const celebration = document.getElementById("celebration");
+    const celeCopy = document.getElementById("cele-copy");
+    const againBtn = document.getElementById("again");
+    const hearts = document.getElementById("hearts");
+    const stars = document.getElementById("stars");
+
+    const hints = [
+      "choose carefully…",
+      "hmm… try again?",
+      "the no button is shy",
+      "yes looks better anyway",
+      "okay now you’re just teasing",
+      "it’s getting harder to say no…",
+      "just say yes already",
+      "the universe wants a yes",
+      "i’ll wait… forever…",
+      "pretty please?",
+    ];
+
+    const winLines = [
+      "phone’s waiting. don’t leave me on read.",
+      "perfect. dial me before midnight.",
+      "told you the yes button would win.",
+      "call me. i already cleared my night.",
+    ];
+
+    let noCount = 0;
+    let yesScale = 1;
+
+    function spawnStars() {
+      const count = Math.min(48, Math.floor(window.innerWidth / 18));
+      stars.innerHTML = "";
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement("span");
+        s.className = "star";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.top = Math.random() * 100 + "%";
+        s.style.setProperty("--dur", 2.4 + Math.random() * 3.5 + "s");
+        s.style.setProperty("--delay", Math.random() * 3 + "s");
+        s.style.width = s.style.height = 2 + Math.random() * 3 + "px";
+        stars.appendChild(s);
+      }
+    }
+
+    function clamp(n, min, max) {
+      return Math.max(min, Math.min(max, n));
+    }
+
+    function moveNo(e) {
+      const area = buttons.getBoundingClientRect();
+      const btn = noBtn.getBoundingClientRect();
+      const pad = 8;
+      const maxLeft = area.width - btn.width - pad;
+      const maxTop = area.height - btn.height - pad;
+
+      let left;
+      let top;
+      let tries = 0;
+
+      do {
+        left = pad + Math.random() * Math.max(pad, maxLeft);
+        top = pad + Math.random() * Math.max(pad, maxTop);
+        tries++;
+      } while (
+        tries < 12 &&
+        Math.hypot(
+          left + btn.width / 2 - (e?.clientX ? e.clientX - area.left : area.width / 2),
+          top + btn.height / 2 - (e?.clientY ? e.clientY - area.top : area.height / 2)
+        ) < 90
+      );
+
+      noBtn.classList.add("fleeing");
+      noBtn.style.left = left + "px";
+      noBtn.style.top = top + "px";
+      noBtn.style.transform = "translate(0, 0)";
+    }
+
+    function growYes() {
+      noCount += 1;
+      yesScale = Math.min(2.8, 1 + noCount * 0.18);
+      const size = 1.15 * yesScale;
+      const padY = 0.9 * Math.min(1.6, 1 + noCount * 0.06);
+      const padX = 1.7 * Math.min(1.8, 1 + noCount * 0.08);
+      yesBtn.style.setProperty("--yes-size", size + "rem");
+      yesBtn.style.setProperty("--yes-pad-y", padY + "rem");
+      yesBtn.style.setProperty("--yes-pad-x", padX + "rem");
+      hint.textContent = hints[Math.min(noCount, hints.length - 1)];
+
+      if (noCount >= 6) {
+        noBtn.style.fontSize = Math.max(0.75, 1.05 - noCount * 0.04) + "rem";
+        noBtn.style.padding =
+          Math.max(0.45, 0.85 - noCount * 0.03) + "rem " +
+          Math.max(0.7, 1.55 - noCount * 0.06) + "rem";
+      }
+    }
+
+    function onNoInteract(e) {
+      e.preventDefault();
+      growYes();
+      moveNo(e);
+    }
+
+    function burstHearts() {
+      for (let i = 0; i < 22; i++) {
+        const h = document.createElement("span");
+        h.className = "heart";
+        h.textContent = "♥";
+        h.style.color = ["#ff6b8a", "#ffd0dc", "#ff4d78", "#ff9eb5"][i % 4];
+        h.style.left = Math.random() * 100 + "%";
+        h.style.animationDelay = Math.random() * 0.6 + "s";
+        h.style.fontSize = 1 + Math.random() * 1.6 + "rem";
+        hearts.appendChild(h);
+        setTimeout(() => h.remove(), 3400);
+      }
+    }
+
+    function sayYes() {
+      celeCopy.textContent = winLines[Math.floor(Math.random() * winLines.length)];
+      celebration.classList.add("show");
+      burstHearts();
+    }
+
+    function reset() {
+      noCount = 0;
+      yesScale = 1;
+      yesBtn.style.setProperty("--yes-size", "1.15rem");
+      yesBtn.style.setProperty("--yes-pad-y", "0.9rem");
+      yesBtn.style.setProperty("--yes-pad-x", "1.7rem");
+      noBtn.style.fontSize = "";
+      noBtn.style.padding = "";
+      noBtn.style.left = "58%";
+      noBtn.style.top = "50%";
+      noBtn.style.transform = "translate(-50%, -50%)";
+      hint.textContent = hints[0];
+      celebration.classList.remove("show");
+    }
+
+    noBtn.addEventListener("mouseenter", onNoInteract);
+    noBtn.addEventListener("focus", onNoInteract);
+    noBtn.addEventListener("click", onNoInteract);
+    noBtn.addEventListener("touchstart", onNoInteract, { passive: false });
+
+    yesBtn.addEventListener("click", sayYes);
+    againBtn.addEventListener("click", reset);
+
+    window.addEventListener("resize", () => {
+      spawnStars();
+      // keep no button inside area after resize
+      const area = buttons.getBoundingClientRect();
+      const btn = noBtn.getBoundingClientRect();
+      const left = clamp(btn.left - area.left, 8, area.width - btn.width - 8);
+      const top = clamp(btn.top - area.top, 8, area.height - btn.height - 8);
+      if (noBtn.style.transform !== "translate(-50%, -50%)") {
+        noBtn.style.left = left + "px";
+        noBtn.style.top = top + "px";
+      }
+    });
+
+    spawnStars();
+  </script>
+</body>
+</html>
